@@ -4,6 +4,9 @@ var Thermometer = require('./routes/thermometer');
 
 const app = express();
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // database connection
 mongoose.connect('mongodb+srv://simon:IoTProject@iotsleeptracking-dwdhr.gcp.mongodb.net/SleepTracking', {useNewUrlParser: true, useUnifiedTopology: true}, () => {
 	console.log('connected to mongodb');

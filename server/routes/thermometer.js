@@ -12,9 +12,10 @@ router.get('/', function(req, res){
 
 router.post('/', function(req, res){
 	var TempModel = req.app.get('tempModel');
+	console.log(req.body);
 	var TempInstance = new TempModel({
 		date_insert: new Date().toISOString().replace('T', ' ').substr(0, 19),
-		temperature: req.query['temperature']
+		temperature: req.body['temperature']
 		});
 	TempInstance.save(function (err) {
 		if (err) console.log(err);
