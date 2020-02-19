@@ -1,2 +1,59 @@
-<p>ejs temp</p>
-<p>data: <%=data%></p>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+	google.charts.load('current', {'packages':['corechart']});
+	google.charts.setOnLoadCallback(drawTemperatureChart);
+	google.charts.setOnLoadCallback(drawHumidityChart);
+
+	var temperature = [];
+	var humidity = [];
+    <% for (var idx in data) { %>
+	var time = new Date('<%=data[idx].date_insert%>');
+	temperature.push([time.getHours() + ':' + time.getMinutes(), <%=data[idx].temperature%>]);
+	humidity.push([time.getHours() + ':' + time.getMinutes(), <%=data[idx].humidity%>]);
+    <% } %>
+
+	function drawTemperatureChart() {
+		var data = new google.visualization.DataTable();
+		data.addColumn('string', 'Hour');
+
+        document.getElementById('current_temperature').innerHTML = "Current temperature: " + temperature[temperature.length-1][1] + " °C";
+		data.addColumn('number', 'Temperature');
+		data.addRows(temperature);
+
+		var options = {
+			title: 'Temperature',
+			hAxis: {title: 'Hour',  titleTextStyle: {color: '#333'}},
+			vAxis: {minValue: 0}
+		};
+
+		var chart = new google.visualization.AreaChart(document.getElementById('temperature_chart'));
+		chart.draw(data, options);
+	}
+
+	function drawHumidityChart() {
+		var data = new google.visualization.DataTable();
+		data.addColumn('string', 'Hour');
+
+		document.getElementById('current_humidity').innerHTML = "Current Humidity: " + humidity[humidity.length-1][1] + " %";
+		data.addColumn('number', 'Humidity');
+		data.addRows(humidity);
+
+		var options = {
+			title: 'Humidity',
+			hAxis: {title: 'Hour',  titleTextStyle: {color: '#333'}},
+			vAxis: {minValue: 0}
+		};
+
+		var chart = new google.visualization.AreaChart(document.getElementById('humidity_chart'));
+		chart.draw(data, options);
+	}
+</script>
+<div id="temperature_chart"></div>
+<div>
+    <p id="current_temperature"></p>
+</div>
+
+<div id="humidity_chart"></div>
+<div>
+    <p id="current_humidity"></p>
+</div>

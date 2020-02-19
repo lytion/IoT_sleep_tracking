@@ -18,6 +18,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 var temperatureSchema = mongoose.Schema({
 	date_insert: String,
 	temperature: Number,
+	humidity: Number,
 });
 var TempModel = mongoose.model("temperature", temperatureSchema);
 

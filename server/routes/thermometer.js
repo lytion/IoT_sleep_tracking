@@ -3,10 +3,8 @@ var router = express.Router();
 
 router.get('/', function(req, res){
 	var TempModel = req.app.get('tempModel');
-	var temperature = 0;
-	TempModel.findOne({}, {}, {sort: {'date_insert': -1}}, function (err, post) {
-		temperature = post.temperature;
-		res.render('thermometer.ejs', {data: temperature});
+	TempModel.find({}, {}, {}, function (err, post) {
+		res.render('thermometer.ejs', {data: post});
 	});
 });
 
@@ -15,7 +13,8 @@ router.post('/', function(req, res){
 	console.log(req.body);
 	var TempInstance = new TempModel({
 		date_insert: new Date().toISOString().replace('T', ' ').substr(0, 19),
-		temperature: req.body['temperature']
+		temperature: req.body['temperature'],
+		humidity: req.body['humidity'],
 		});
 	TempInstance.save(function (err) {
 		if (err) console.log(err);
