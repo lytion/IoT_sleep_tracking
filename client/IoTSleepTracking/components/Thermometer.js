@@ -9,7 +9,14 @@ class Thermometer extends Component {
 		};
 
 	}
-	componentDidMount = () => {
+
+	componentDidMount(){
+		this.getThermometerData();
+		this.timer = setInterval(()=> this.getThermometerData(), 60000);
+	}
+
+	async getThermometerData() {
+		console.log('passe');
 		fetch('http://129.12.128.210:3000/thermometer', {
 			method: 'GET'
 		})
@@ -24,6 +31,7 @@ class Thermometer extends Component {
 				console.error(error);
 			});
 	};
+
 	render () {
 		console.log(this.state.data);
 		return (
