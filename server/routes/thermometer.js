@@ -4,7 +4,8 @@ var router = express.Router();
 router.get('/', function(req, res){
 	var TempModel = req.app.get('tempModel');
 	TempModel.find({}, {}, {}, function (err, post) {
-		res.render('thermometer.ejs', {data: post});
+		// res.render('thermometer.ejs', {data: post});
+		res.send(post);
 	});
 });
 

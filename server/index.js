@@ -1,4 +1,5 @@
 const express = require('express');
+var cors = require('cors');
 var mongoose = require('mongoose');
 var Thermometer = require('./routes/thermometer');
 
@@ -6,6 +7,7 @@ const app = express();
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 // database connection
 mongoose.connect('mongodb+srv://simon:IoTProject@iotsleeptracking-dwdhr.gcp.mongodb.net/SleepTracking', {useNewUrlParser: true, useUnifiedTopology: true}, () => {
