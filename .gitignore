@@ -1,5 +1,16 @@
 server/node_modules/
 .idea
 client/IoTSleepTracking/node_modules
-client/IoTSleepTracking/.expo
+
+client/IoTSleepTracking/node_modules/**/*
+client/IoTSleepTracking/.expo/*
 client/IoTSleepTracking/.expo-shared
+client/IoTSleepTracking/npm-debug.*
+client/IoTSleepTracking/*.jks
+client/IoTSleepTracking/*.p8
+client/IoTSleepTracking/*.p12
+client/IoTSleepTracking/*.key
+client/IoTSleepTracking/*.mobileprovision
+client/IoTSleepTracking/*.orig.*
+client/IoTSleepTracking/web-build/
+client/IoTSleepTracking/web-report/
