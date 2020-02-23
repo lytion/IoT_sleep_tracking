@@ -23,6 +23,10 @@
             </intent-filter>
         </activity>
 
+        <service
+        android:name=".RingtonePlayingService"
+        android:exported="false"/>
+
         <receiver android:name=".AlertReceiver" />
 
     </application>
