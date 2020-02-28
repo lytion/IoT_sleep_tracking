@@ -12,11 +12,15 @@ router.get('/', function(req, res){
 router.post('/', function(req, res){
 	var TempModel = req.app.get('tempModel');
 	console.log(req.body);
+	acc = req.body['acceleration'].split(';');
 	var TempInstance = new TempModel({
 		date_insert: new Date().toISOString().replace('T', ' ').substr(0, 19),
 		temperature: req.body['temperature'],
 		humidity: req.body['humidity'],
-		light: req.body['light']
+		light: req.body['light'],
+		acc_x: acc[0],
+		acc_y: acc[1],
+		acc_z: acc[2],
 		});
 	TempInstance.save(function (err) {
 		if (err) console.log(err);

@@ -22,6 +22,9 @@ var temperatureSchema = mongoose.Schema({
 	temperature: Number,
 	humidity: Number,
 	light: Number,
+	acc_x: Number,
+	acc_y: Number,
+	acc_z: Number,
 });
 var TempModel = mongoose.model("temperature", temperatureSchema);
 
