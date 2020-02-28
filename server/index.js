@@ -21,6 +21,7 @@ var temperatureSchema = mongoose.Schema({
 	date_insert: String,
 	temperature: Number,
 	humidity: Number,
+	light: Number,
 });
 var TempModel = mongoose.model("temperature", temperatureSchema);
 

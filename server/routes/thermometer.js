@@ -16,6 +16,7 @@ router.post('/', function(req, res){
 		date_insert: new Date().toISOString().replace('T', ' ').substr(0, 19),
 		temperature: req.body['temperature'],
 		humidity: req.body['humidity'],
+		light: req.body['light']
 		});
 	TempInstance.save(function (err) {
 		if (err) console.log(err);
