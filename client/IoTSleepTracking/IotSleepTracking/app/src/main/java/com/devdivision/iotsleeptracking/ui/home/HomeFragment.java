@@ -1,82 +1,113 @@
 package com.devdivision.iotsleeptracking.ui.home;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
-import com.devdivision.iotsleeptracking.MainActivity;
+import com.devdivision.iotsleeptracking.AlertReceiver;
 import com.devdivision.iotsleeptracking.R;
+import com.devdivision.iotsleeptracking.TimePickerFragment;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.text.DateFormat;
+import java.util.Calendar;
 
-import java.io.IOException;
-
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements TimePickerDialog.OnTimeSetListener {
 
     private HomeViewModel homeViewModel;
-    private TextView currentTemperature;
-    private TextView currentHumidity;
+    private TextView mTextView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        currentTemperature = root.findViewById(R.id.current_temperature);
-        currentHumidity = root.findViewById(R.id.current_humidity);
-        OkHttpClient client = new OkHttpClient();
-        String url = "http://129.12.128.210:3000/thermometer";
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                Log.d("STATE", "failed");
-            }
 
+        Button buttonTimePicker = root.findViewById(R.id.button_timepicker);
+        buttonTimePicker.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    Log.d("STATE", "success");
-                    final String myResponse = response.body().string();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                JSONArray jsonarray = new JSONArray(myResponse);
-//                                for (int i = 0; i < jsonarray.length(); i++) {
-//                                    JSONObject jsonobject = jsonarray.getJSONObject(i);
-////                                    currentTemperature.setText(jsonobject.getString("temperature").toString());
-////                                    Log.d("DATA", jsonobject.getString("temperature").toString());
-//                                }
-                                currentTemperature.setText("Current temperature: " + jsonarray.getJSONObject(jsonarray.length()-1).getString("temperature").toString() + " °C");
-                                currentHumidity.setText("Current humidity: " + jsonarray.getJSONObject(jsonarray.length()-1).getString("humidity").toString() + " %");
-                            } catch (JSONException e) {
-
-                            }
-                        }
-                    });
-                }
+            public void onClick(View v) {
+                TimePickerFragment timePicker = new TimePickerFragment();
+                timePicker.setCallBack(ontime);
+                timePicker.show(getActivity().getSupportFragmentManager(), "time picker");
             }
         });
+
+        mTextView = root.findViewById(R.id.textView);
+        Button buttonCancelAlarm = root.findViewById(R.id.button_cancel);
+        buttonCancelAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelAlarm();
+            }
+        });
+
         return root;
+    }
+
+    TimePickerDialog.OnTimeSetListener ontime = new TimePickerDialog.OnTimeSetListener() {
+
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            c.set(Calendar.MINUTE, minute);
+            c.set(Calendar.SECOND, 0);
+
+            updateTimeText(c);
+            startAlarm(c);
+        }
+    };
+
+    private void updateTimeText(Calendar c) {
+        String timeText = "Alarm set for: ";
+        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
+
+        mTextView.setText(timeText);
+    }
+
+    private void startAlarm(Calendar c) {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), AlertReceiver.class);
+        intent.putExtra("extra", "yes");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
+
+        if (c.before(Calendar.getInstance())) {
+            c.add(Calendar.DATE, 1);
+        }
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+    }
+
+    private void cancelAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), AlertReceiver.class);
+        intent.putExtra("extra", "no");
+        getActivity().sendBroadcast(intent);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
+
+        alarmManager.cancel(pendingIntent);
+        mTextView.setText("Alarm canceled");
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
     }
 }

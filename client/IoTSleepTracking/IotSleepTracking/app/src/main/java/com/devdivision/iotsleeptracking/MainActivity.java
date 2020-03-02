@@ -35,7 +35,7 @@ import android.widget.TimePicker;
 import java.text.DateFormat;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private TextView mTextView;
@@ -67,24 +67,24 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        mTextView = findViewById(R.id.textView);
-
-        Button buttonTimePicker = findViewById(R.id.button_timepicker);
-        buttonTimePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(getSupportFragmentManager(), "time picker");
-            }
-        });
-
-        Button buttonCancelAlarm = findViewById(R.id.button_cancel);
-        buttonCancelAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancelAlarm();
-            }
-        });
+//        mTextView = findViewById(R.id.textView);
+//
+//        Button buttonTimePicker = findViewById(R.id.button_timepicker);
+//        buttonTimePicker.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DialogFragment timePicker = new TimePickerFragment();
+//                timePicker.show(getSupportFragmentManager(), "time picker");
+//            }
+//        });
+//
+//        Button buttonCancelAlarm = findViewById(R.id.button_cancel);
+//        buttonCancelAlarm.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                cancelAlarm();
+//            }
+//        });
     }
 
     @Override
@@ -101,45 +101,44 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 || super.onSupportNavigateUp();
     }
 
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        c.set(Calendar.MINUTE, minute);
-        c.set(Calendar.SECOND, 0);
-
-        updateTimeText(c);
-        startAlarm(c);
-    }
-
-    private void updateTimeText(Calendar c) {
-        String timeText = "Alarm set for: ";
-        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
-
-        mTextView.setText(timeText);
-    }
-
-    private void startAlarm(Calendar c) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        intent.putExtra("extra", "yes");
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-
-        if (c.before(Calendar.getInstance())) {
-            c.add(Calendar.DATE, 1);
-        }
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-    }
-
-    private void cancelAlarm() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        intent.putExtra("extra", "no");
-        sendBroadcast(intent);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-
-        alarmManager.cancel(pendingIntent);
-        mTextView.setText("Alarm canceled");
-    }
+//    @Override
+//    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//        Calendar c = Calendar.getInstance();
+//        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+//        c.set(Calendar.MINUTE, minute);
+//        c.set(Calendar.SECOND, 0);
+//
+//        updateTimeText(c);
+//        startAlarm(c);
+//    }
+//
+//    private void updateTimeText(Calendar c) {
+//        String timeText = "Alarm set for: ";
+//        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
+//        mTextView.setText(timeText);
+//    }
+//
+//    private void startAlarm(Calendar c) {
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent(this, AlertReceiver.class);
+//        intent.putExtra("extra", "yes");
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+//
+//        if (c.before(Calendar.getInstance())) {
+//            c.add(Calendar.DATE, 1);
+//        }
+//
+//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+//    }
+//
+//    public void cancelAlarm() {
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent(this, AlertReceiver.class);
+//        intent.putExtra("extra", "no");
+//        sendBroadcast(intent);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+//
+//        alarmManager.cancel(pendingIntent);
+//        mTextView.setText("Alarm canceled");
+//    }
 }
