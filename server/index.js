@@ -1,7 +1,7 @@
 const express = require('express');
 var cors = require('cors');
 var mongoose = require('mongoose');
-var Thermometer = require('./routes/thermometer');
+var RoomEnvironment = require('./routes/roomenvironment');
 
 const app = express();
 
@@ -17,7 +17,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 
 // temperature schema + model
-var temperatureSchema = mongoose.Schema({
+var roomEnvironmentSchema = mongoose.Schema({
 	date_insert: String,
 	temperature: Number,
 	humidity: Number,
@@ -26,16 +26,16 @@ var temperatureSchema = mongoose.Schema({
 	acc_y: Number,
 	acc_z: Number,
 });
-var TempModel = mongoose.model("temperature", temperatureSchema);
+var roomEnvironmentModel = mongoose.model("room_environment", roomEnvironmentSchema);
 
 app.get('/', function (req, res) {
 	res.send('Hello World!')
 });
 
-app.use('/thermometer', Thermometer);
-app.set('tempModel', TempModel);
+app.use('/roomenvironment', RoomEnvironment);
+app.set('roomEnvironmentModel', roomEnvironmentModel);
 
-app.post('/thermometer', function(req, res) {
+app.post('/roomenvironment', function(req, res) {
 	console.log(req.query);
 });
 
