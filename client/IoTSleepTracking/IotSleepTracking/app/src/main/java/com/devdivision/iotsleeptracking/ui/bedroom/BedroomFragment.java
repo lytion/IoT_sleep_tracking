@@ -1,4 +1,4 @@
-package com.devdivision.iotsleeptracking.ui.gallery;
+package com.devdivision.iotsleeptracking.ui.bedroom;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -7,10 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -25,18 +23,18 @@ import org.json.JSONException;
 
 import java.io.IOException;
 
-public class GalleryFragment extends Fragment {
+public class BedroomFragment extends Fragment {
 
-    private GalleryViewModel galleryViewModel;
+    private BedroomViewModel roomViewModel;
     private TextView currentTemperature;
     private TextView currentHumidity;
     private TextView currentLight;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        galleryViewModel =
-                ViewModelProviders.of(this).get(GalleryViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
+        roomViewModel =
+                ViewModelProviders.of(this).get(BedroomViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_bedroom, container, false);
         currentTemperature = root.findViewById(R.id.current_temperature);
         currentHumidity = root.findViewById(R.id.current_humidity);
         currentLight = root.findViewById(R.id.current_light);

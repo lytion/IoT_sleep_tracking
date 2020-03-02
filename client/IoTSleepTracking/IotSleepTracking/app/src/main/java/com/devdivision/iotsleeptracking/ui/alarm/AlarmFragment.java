@@ -1,13 +1,11 @@
-package com.devdivision.iotsleeptracking.ui.home;
+package com.devdivision.iotsleeptracking.ui.alarm;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +14,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.devdivision.iotsleeptracking.AlertReceiver;
@@ -29,16 +24,16 @@ import com.devdivision.iotsleeptracking.TimePickerFragment;
 import java.text.DateFormat;
 import java.util.Calendar;
 
-public class HomeFragment extends Fragment implements TimePickerDialog.OnTimeSetListener {
+public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSetListener {
 
-    private HomeViewModel homeViewModel;
+    private AlarmViewModel alarmViewModel;
     private TextView mTextView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        alarmViewModel =
+                ViewModelProviders.of(this).get(AlarmViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_alarm, container, false);
 
         Button buttonTimePicker = root.findViewById(R.id.button_timepicker);
         buttonTimePicker.setOnClickListener(new View.OnClickListener() {
