@@ -39,7 +39,7 @@ public class BedroomFragment extends Fragment {
         currentHumidity = root.findViewById(R.id.current_humidity);
         currentLight = root.findViewById(R.id.current_light);
         OkHttpClient client = new OkHttpClient();
-        String url = "http://90.110.233.140:3000/roomenvironment";
+        String url = "https://iotsleeptracking.herokuapp.com/roomenvironment";
         Request request = new Request.Builder()
                 .url(url)
                 .build();

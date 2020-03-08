@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 // database connection
-mongoose.connect('mongodb+srv://simon:JV7c8@iotsleeptracking-abyfb.gcp.mongodb.net/SleepTracking', {useNewUrlParser: true, useUnifiedTopology: true}, () => {
+mongoose.connect('mongodb+srv://simon:JV7c8@iotsleeptracking-abyfb.gcp.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true}, () => {
 	console.log('connected to mongodb');
 });
 var db = mongoose.connection;
