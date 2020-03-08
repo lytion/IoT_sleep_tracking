@@ -39,7 +39,7 @@ public class BedroomFragment extends Fragment {
         currentHumidity = root.findViewById(R.id.current_humidity);
         currentLight = root.findViewById(R.id.current_light);
         OkHttpClient client = new OkHttpClient();
-        String url = "http://129.12.128.210:3000/roomenvironment";
+        String url = "http://90.110.233.140:3000/roomenvironment";
         Request request = new Request.Builder()
                 .url(url)
                 .build();
