@@ -9,6 +9,7 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+const port = process.env.PORT || 5000;
 
 // database connection
 mongoose.connect('mongodb+srv://simon:JV7c8@iotsleeptracking-abyfb.gcp.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true}, () => {
@@ -54,6 +55,4 @@ app.get('/', function (req, res) {
 	res.send('Hello World!')
 });
 
-app.listen(5000, function () {
-	console.log('Example app listening on port 5000!')
-});
+app.listen(port, () => console.log(`server has started on port ${port}`));
