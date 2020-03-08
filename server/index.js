@@ -1,7 +1,7 @@
 const express = require('express');
 var cors = require('cors');
 var mongoose = require('mongoose');
-var RoomEnvironment = require('./routes/roomenvironment');
+var RoomEnvironment = require('./routes/RoomEnvironment');
 var UserMovement = require('./routes/UserMovement');
 
 const app = express();
