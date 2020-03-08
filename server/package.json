@@ -13,7 +13,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "ls && node index.js",
+    "start": "node index.js",
     "start_debug": "nodemon index.js"
   },
   "author": "Simon Bauchet",
