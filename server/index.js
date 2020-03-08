@@ -12,7 +12,7 @@ app.use(cors());
 const port = process.env.PORT || 5000;
 
 // database connection
-mongoose.connect('mongodb+srv://simon:JV7c8@iotsleeptracking-abyfb.gcp.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true}, () => {
+mongoose.connect('mongodb+srv://simon:JV7c8@iotsleeptracking-abyfb.gcp.mongodb.net/SleepTracking', {useNewUrlParser: true, useUnifiedTopology: true}, () => {
 	console.log('connected to mongodb');
 });
 var db = mongoose.connection;
