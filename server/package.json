@@ -15,7 +15,7 @@
   "scripts": {
     "start": "node index.js",
     "start_debug": "nodemon index.js",
-    "push_heroku": "cd .. && git subtree push --prefix path/to/subdirectory heroku master"
+    "push_heroku": "cd .. && git subtree push --prefix server/ heroku master"
   },
   "author": "Simon Bauchet",
   "license": "ISC"
