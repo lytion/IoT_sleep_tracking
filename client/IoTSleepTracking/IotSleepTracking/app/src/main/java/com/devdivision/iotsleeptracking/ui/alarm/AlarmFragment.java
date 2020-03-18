@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,8 +33,10 @@ import java.util.Calendar;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSetListener {
@@ -58,48 +61,17 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         });
 
         textAlarmSet = root.findViewById(R.id.textAlarmSet);
-        OkHttpClient client = new OkHttpClient();
-        String url = "https://iotsleeptracking.herokuapp.com/alarm";
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                Log.d("STATE", "failed");
+        getAlarm(textAlarmSet);
+        final Handler handler = new Handler();
+        final int delay = 60000; //milliseconds
+
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                getAlarm(textAlarmSet);
+                handler.postDelayed(this, delay);
             }
+        }, delay);
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d("STATE", String.valueOf(response.isSuccessful()));
-                if (response.isSuccessful()) {
-                    Log.d("STATE", "success");
-                    final String myResponse = response.body().string();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                JSONArray jsonarray = new JSONArray(myResponse);
-                                Log.d("DATA", "Test");
-                                for (int i = 0; i < jsonarray.length(); i++) {
-                                    JSONObject jsonobject = jsonarray.getJSONObject(i);
-//                                    currentTemperature.setText(jsonobject.getString("temperature").toString());
-                                    Log.d("DATA", jsonobject.getString("alarm_date").toString());
-                                }
-                                Log.d("DATA", jsonarray.getJSONObject(jsonarray.length()-1).getString("alarm_date").toString());
-                                textAlarmSet.setText(jsonarray.getJSONObject(jsonarray.length()-1).getString("alarm_date").toString());
-
-                            } catch (JSONException e) {
-                                Log.e("ERROR", e.toString());
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-//        textAlarmSet = root.findViewById(R.id.textAlarmSet);
         Button buttonCancelAlarm = root.findViewById(R.id.button_cancel);
         buttonCancelAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,11 +96,88 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         }
     };
 
-    private void updateTimeText(Calendar c) {
-        String timeText = "Alarm set for: ";
-        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
+    private void getAlarm(final TextView textAlarmSet) {
+        Log.d("STATE", "GET REQUEST");
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://iotsleeptracking.herokuapp.com/alarm";
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                Log.d("STATE", "failed");
+            }
 
-        textAlarmSet.setText(timeText);
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.d("STATE", "success");
+                    final String myResponse = response.body().string();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONArray jsonarray = new JSONArray(myResponse);
+                                String textTime = jsonarray.getJSONObject(jsonarray.length()-1).getString("alarm_date").toString();
+                                String[] dataTime = textTime.split(":");
+                                textAlarmSet.setText(textTime);
+
+                                Calendar c = Calendar.getInstance();
+                                c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(dataTime[0]));
+                                c.set(Calendar.MINUTE, Integer.parseInt(dataTime[1]));
+                                c.set(Calendar.SECOND, 0);
+                                startAlarm(c);
+
+                            } catch (JSONException e) {
+                                Log.e("ERROR", e.toString());
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void postAlarm(String time) {
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://iotsleeptracking.herokuapp.com/alarm";
+        RequestBody formBody = new FormBody.Builder()
+                .add("alarm_date", time)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                Log.d("STATE", "failed");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.d("STATE", "success");
+                    final String myResponse = response.body().string();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                                Log.d("STATE", myResponse.toString());
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void updateTimeText(Calendar c) {
+        String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
+
+        postAlarm(time);
+        textAlarmSet.setText(time);
     }
 
     private void startAlarm(Calendar c) {
