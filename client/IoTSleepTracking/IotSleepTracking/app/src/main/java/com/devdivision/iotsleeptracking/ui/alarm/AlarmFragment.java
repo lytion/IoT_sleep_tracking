@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +22,24 @@ import com.devdivision.iotsleeptracking.AlertReceiver;
 import com.devdivision.iotsleeptracking.R;
 import com.devdivision.iotsleeptracking.TimePickerFragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Calendar;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSetListener {
 
     private AlarmViewModel alarmViewModel;
-    private TextView mTextView;
+    private TextView textAlarmSet;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -45,7 +57,48 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
             }
         });
 
-        mTextView = root.findViewById(R.id.textView);
+        textAlarmSet = root.findViewById(R.id.textAlarmSet);
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://iotsleeptracking.herokuapp.com/alarm";
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                Log.d("STATE", "failed");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("STATE", String.valueOf(response.isSuccessful()));
+                if (response.isSuccessful()) {
+                    Log.d("STATE", "success");
+                    final String myResponse = response.body().string();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Log.d("DATA", "Test");
+                                JSONArray jsonarray = new JSONArray(myResponse);
+                                for (int i = 0; i < jsonarray.length(); i++) {
+                                    JSONObject jsonobject = jsonarray.getJSONObject(i);
+//                                    currentTemperature.setText(jsonobject.getString("temperature").toString());
+                                    Log.d("DATA", jsonobject.getString("alarm_date").toString());
+                                }
+                                textAlarmSet.setText(jsonarray.getJSONObject(jsonarray.length()-1).getString("alarm_date").toString());
+
+                            } catch (JSONException e) {
+
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+//        textAlarmSet = root.findViewById(R.id.textAlarmSet);
         Button buttonCancelAlarm = root.findViewById(R.id.button_cancel);
         buttonCancelAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +127,7 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         String timeText = "Alarm set for: ";
         timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
 
-        mTextView.setText(timeText);
+        textAlarmSet.setText(timeText);
     }
 
     private void startAlarm(Calendar c) {
@@ -98,7 +151,7 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
 
         alarmManager.cancel(pendingIntent);
-        mTextView.setText("Alarm canceled");
+        textAlarmSet.setText("Alarm canceled");
     }
 
     @Override

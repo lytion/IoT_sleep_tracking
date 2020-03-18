@@ -3,6 +3,7 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 var RoomEnvironment = require('./routes/RoomEnvironment');
 var UserMovement = require('./routes/UserMovement');
+var Alarm = require('./routes/Alarm');
 
 const app = express();
 
@@ -17,16 +18,14 @@ mongoose.connect('mongodb+srv://simon:JV7c8@iotsleeptracking-abyfb.gcp.mongodb.n
 });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
-
-// roomEnvironment schema + model
+/**
+ * roomEnvironment schema + model
+ */
 var roomEnvironmentSchema = mongoose.Schema({
 	date_insert: String,
 	temperature: Number,
 	humidity: Number,
 	light: Number,
-	acc_x: Number,
-	acc_y: Number,
-	acc_z: Number,
 });
 var roomEnvironmentModel = mongoose.model("room_environment", roomEnvironmentSchema);
 
@@ -37,7 +36,9 @@ app.post('/roomenvironment', function(req, res) {
 	console.log(req.query);
 });
 
-// user movement schema + model
+/**
+ * user movement schema + model
+ */
 var userMovementSchema = mongoose.Schema({
 	date_insert: String,
 	movement: Number,
@@ -50,6 +51,24 @@ app.set('userMovementModel', userMovementModel);
 app.post('/usermovement', function(req, res) {
 	console.log(req.query);
 });
+
+/**
+ *  alarm schema + model
+ */
+var alarmSchema = mongoose.Schema({
+	date_insert: String,
+	alarm_date: String,
+});
+var alarmModel = mongoose.model("alarm", alarmSchema);
+
+app.use('/alarm', Alarm);
+app.set('alarmModel', alarmModel);
+
+app.post('/alarm', function(req, res) {
+	console.log(req.query);
+});
+
+
 
 app.get('/', function (req, res) {
 	res.send('Hello World!')

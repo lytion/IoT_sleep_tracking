@@ -17,9 +17,6 @@ router.post('/', function(req, res){
 		temperature: req.body['temperature'],
 		humidity: req.body['humidity'],
 		light: req.body['light'],
-		acc_x: req.body['gx'],
-		acc_y: req.body['gy'],
-		acc_z: req.body['gz'],
 		});
 	roomEnvironmentInstance.save(function (err) {
 		if (err) console.log(err);
