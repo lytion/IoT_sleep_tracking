@@ -3,7 +3,8 @@ var router = express.Router();
 
 router.get('/', function(req, res){
 	var alarmModel = req.app.get('alarmModel');
-	alarmModel.findOne().sort({date_insert: -1}).exec(function(err, post) {
+	alarmModel.find({}, {}, {}, function (err, post) {
+		// res.render('thermometer.ejs', {data: post});
 		res.send(post);
 	});
 });

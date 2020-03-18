@@ -59,6 +59,7 @@ public class BedroomFragment extends Fragment {
                         @Override
                         public void run() {
                             try {
+                                Log.d("DATA", myResponse);
                                 JSONArray jsonarray = new JSONArray(myResponse);
 //                                for (int i = 0; i < jsonarray.length(); i++) {
 //                                    JSONObject jsonobject = jsonarray.getJSONObject(i);
@@ -69,7 +70,7 @@ public class BedroomFragment extends Fragment {
                                 currentHumidity.setText("Current humidity: " + jsonarray.getJSONObject(jsonarray.length()-1).getString("humidity").toString() + " %");
                                 currentLight.setText("Current light: " + jsonarray.getJSONObject(jsonarray.length()-1).getString("light").toString() + " lx");
                             } catch (JSONException e) {
-
+                                Log.e("ERROR", e.toString());
                             }
                         }
                     });

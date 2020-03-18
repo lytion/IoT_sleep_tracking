@@ -80,17 +80,18 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
                         @Override
                         public void run() {
                             try {
-                                Log.d("DATA", "Test");
                                 JSONArray jsonarray = new JSONArray(myResponse);
+                                Log.d("DATA", "Test");
                                 for (int i = 0; i < jsonarray.length(); i++) {
                                     JSONObject jsonobject = jsonarray.getJSONObject(i);
 //                                    currentTemperature.setText(jsonobject.getString("temperature").toString());
                                     Log.d("DATA", jsonobject.getString("alarm_date").toString());
                                 }
+                                Log.d("DATA", jsonarray.getJSONObject(jsonarray.length()-1).getString("alarm_date").toString());
                                 textAlarmSet.setText(jsonarray.getJSONObject(jsonarray.length()-1).getString("alarm_date").toString());
 
                             } catch (JSONException e) {
-
+                                Log.e("ERROR", e.toString());
                             }
                         }
                     });
