@@ -14,7 +14,8 @@ router.post('/', function(req, res){
 	console.log(req.body);
 	var alarmInstance = new alarmModel({
 		date_insert: new Date().toISOString().replace('T', ' ').substr(0, 19),
-		alarm_date: req.body['alarm_date']
+		alarm_date: req.body['alarm_date'],
+		interval: req.body['interval'],
 	});
 	alarmInstance.save(function (err) {
 		if (err) console.log(err);

@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var RoomEnvironment = require('./routes/RoomEnvironment');
 var UserMovement = require('./routes/UserMovement');
 var Alarm = require('./routes/Alarm');
+var SmartAlarm = require('./routes/SmartAlarm');
 
 const app = express();
 
@@ -68,7 +69,7 @@ app.post('/alarm', function(req, res) {
 	console.log(req.query);
 });
 
-
+app.use('/smartalarm', SmartAlarm);
 
 app.get('/', function (req, res) {
 	res.send('Hello World!')
