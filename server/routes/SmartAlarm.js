@@ -27,7 +27,8 @@ router.get('/', function(req, res){
 			});
 			res.send("SmartAlarm set");
 		}
-		res.send("Not authorized to set an alarm on this interval");
+		else
+			res.send("Not authorized to set an alarm on this interval");
 	});
 });
 
