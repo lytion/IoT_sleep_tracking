@@ -59,6 +59,7 @@ app.post('/usermovement', function(req, res) {
 var alarmSchema = mongoose.Schema({
 	date_insert: String,
 	alarm_date: String,
+	interval: Number,
 });
 var alarmModel = mongoose.model("alarm", alarmSchema);
 
