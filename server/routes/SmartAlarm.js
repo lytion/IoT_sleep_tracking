@@ -18,7 +18,7 @@ router.get('/', function(req, res){
 		if (diff > 1 && diff < post.interval) {
 			var alarmInstance = new alarmModel({
 				date_insert: new Date().toISOString().replace('T', ' ').substr(0, 19),
-				alarm_date: date.getHours()+':'+date.getMinutes(),
+				alarm_date: date.getHours()+':'+ (date.getMinutes()+2),
 				interval: 0
 			});
 			alarmInstance.save(function (err) {
