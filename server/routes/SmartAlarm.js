@@ -16,16 +16,17 @@ router.get('/', function(req, res){
 		console.log("interval: "+post.interval);
 		console.log("diff: "+diff);
 		if (diff > 1 && diff < post.interval) {
+			var smartAlarm = date.getHours()+':'+ (date.getMinutes()+1);
 			var alarmInstance = new alarmModel({
 				date_insert: new Date().toISOString().replace('T', ' ').substr(0, 19),
-				alarm_date: date.getHours()+':'+ (date.getMinutes()+2),
+				alarm_date: smartAlarm,
 				interval: 0
 			});
 			alarmInstance.save(function (err) {
 				if (err) console.log(err);
 				else console.log('alarm save');
 			});
-			res.send("SmartAlarm set");
+			res.send("SmartAlarm set to: " + smartAlarm);
 		}
 		else
 			res.send("Not authorized to set an alarm on this interval");

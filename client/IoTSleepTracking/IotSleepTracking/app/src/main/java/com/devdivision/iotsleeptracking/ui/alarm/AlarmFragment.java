@@ -63,7 +63,7 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         textAlarmSet = root.findViewById(R.id.textAlarmSet);
         getAlarm(textAlarmSet);
         final Handler handler = new Handler();
-        final int delay = 60000; //milliseconds
+        final int delay = 30000; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){

@@ -18,7 +18,7 @@ public class AlertReceiver extends BroadcastReceiver {
         Intent serviceIntent = new Intent(context,RingtonePlayingService.class);
         String state = intent.getExtras().getString("extra");
         serviceIntent.putExtra("extra", state);
-        context.startService(serviceIntent);
+        context.startForegroundService(serviceIntent);
     }
 
 }
