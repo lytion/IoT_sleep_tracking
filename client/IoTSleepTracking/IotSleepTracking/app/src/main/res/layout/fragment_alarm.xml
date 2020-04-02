@@ -10,39 +10,69 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/button_timepicker"
+        android:layout_marginTop="68dp"
         android:text="No Alarm set"
         android:textSize="30sp"
-        android:layout_marginTop="100dp"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button_timepicker"
+    <EditText
+        android:id="@+id/interval"
+        android:layout_width="42dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="96dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/intervalTextView"
+        app:layout_constraintTop_toBottomOf="@+id/textAlarmSet" />
+
+    <TextView
+        android:id="@+id/intervalTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="45dp"
-        android:layout_marginEnd="12dp"
-        android:text="Set a new alarm"
-        app:layout_constraintTop_toBottomOf="@+id/textAlarmSet"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="120dp"
+        android:text="Interval:"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textAlarmSet" />
+
+    <TextView
+        android:id="@+id/minTextView"
+        android:layout_width="33dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="116dp"
+        android:text="min"
+        app:layout_constraintStart_toEndOf="@+id/interval"
+        app:layout_constraintTop_toBottomOf="@+id/textAlarmSet" />
 
     <Button
         android:id="@+id/button_cancel"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="212dp"
+        android:background="#DD4E4E"
+        android:text="Cancel alarm"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textAlarmSet" />
+
+    <Button
+        android:id="@+id/button_timepicker"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/button_timepicker"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:text="Cancel alarm"
-        app:layout_constraintTop_toBottomOf="@+id/button_timepicker"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="212dp"
+        android:background="#6CCD36"
+        android:text="Set new alarm"
+        app:layout_constraintStart_toEndOf="@+id/button_cancel"
+        app:layout_constraintTop_toBottomOf="@+id/textAlarmSet" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,13 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -43,17 +46,25 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
 
     private AlarmViewModel alarmViewModel;
     private TextView textAlarmSet;
+    private EditText intervalEditText;
+    private Integer interval;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         alarmViewModel =
                 ViewModelProviders.of(this).get(AlarmViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_alarm, container, false);
+        final View root = inflater.inflate(R.layout.fragment_alarm, container, false);
 
         Button buttonTimePicker = root.findViewById(R.id.button_timepicker);
         buttonTimePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                intervalEditText = root.findViewById(R.id.interval);
+                if(TextUtils.isEmpty(intervalEditText.getText().toString())) {
+                    intervalEditText.setError("You have to set an interval");
+                    return;
+                }
+                interval = Integer.parseInt(intervalEditText.getText().toString());
                 TimePickerFragment timePicker = new TimePickerFragment();
                 timePicker.setCallBack(ontime);
                 timePicker.show(getActivity().getSupportFragmentManager(), "time picker");
@@ -61,12 +72,13 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         });
 
         textAlarmSet = root.findViewById(R.id.textAlarmSet);
-        getAlarm(textAlarmSet);
+//        getAlarm(textAlarmSet);
         final Handler handler = new Handler();
-        final int delay = 30000; //milliseconds
+        final int delay = 10000; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){
+                Log.d("STATE", ">>>RUN");
                 getAlarm(textAlarmSet);
                 handler.postDelayed(this, delay);
             }
@@ -145,6 +157,7 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         String url = "https://iotsleeptracking.herokuapp.com/alarm";
         RequestBody formBody = new FormBody.Builder()
                 .add("alarm_date", time)
+                .add("interval", interval.toString())
                 .build();
         Request request = new Request.Builder()
                 .url(url)

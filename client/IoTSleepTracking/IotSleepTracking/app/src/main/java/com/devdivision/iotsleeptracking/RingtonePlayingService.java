@@ -1,6 +1,7 @@
 package com.devdivision.iotsleeptracking;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -9,6 +10,8 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
 import android.util.Log;
 
 import java.util.Random;
@@ -38,13 +41,20 @@ public class RingtonePlayingService extends Service {
         Intent intent1 = new Intent(this.getApplicationContext(), MainActivity.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent1, 0);
 
-        Notification mNotify  = new Notification.Builder(this)
+        Notification mNotify  = new NotificationCompat.Builder(this, "channel_01_sleep")
                 .setContentTitle("Richard Dawkins is talking" + "!")
                 .setContentText("Click me!")
                 .setSmallIcon(R.drawable.ic_android)
                 .setContentIntent(pIntent)
                 .setAutoCancel(true)
                 .build();
+
+        NotificationChannel channel = new NotificationChannel("channel_01_sleep",
+                "Channel human readable title",
+                NotificationManager.IMPORTANCE_DEFAULT);
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+        startForeground(1, mNotify);
+
 
         String state = intent.getExtras().getString("extra");
         assert state != null;
@@ -107,7 +117,6 @@ public class RingtonePlayingService extends Service {
             this.isRunning = false;
             this.startId = 0;
         }
-
 
         Log.e("MyActivity", "In the service");
 
