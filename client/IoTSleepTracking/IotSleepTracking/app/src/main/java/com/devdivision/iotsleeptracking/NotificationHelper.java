@@ -40,8 +40,8 @@ public class NotificationHelper extends ContextWrapper {
 
     public NotificationCompat.Builder getChannelNotification() {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
-                .setContentTitle("Alarm!")
-                .setContentText("Your AlarmManager is working.")
+                .setContentTitle("IoTSleepTracking")
+                .setContentText("Click here to cancel the alarm.")
                 .setSmallIcon(R.drawable.ic_android);
     }
 }

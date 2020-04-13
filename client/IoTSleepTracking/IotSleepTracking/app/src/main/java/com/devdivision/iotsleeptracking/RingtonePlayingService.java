@@ -42,9 +42,9 @@ public class RingtonePlayingService extends Service {
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent1, 0);
 
         Notification mNotify  = new NotificationCompat.Builder(this, "channel_01_sleep")
-                .setContentTitle("Richard Dawkins is talking" + "!")
-                .setContentText("Click me!")
-                .setSmallIcon(R.drawable.ic_android)
+                .setContentTitle("An alarm is ringing!")
+                .setContentText("Click here to cancel it.")
+                .setSmallIcon(R.drawable.ic_alarm_black_24dp)
                 .setContentIntent(pIntent)
                 .setAutoCancel(true)
                 .build();
@@ -87,7 +87,7 @@ public class RingtonePlayingService extends Service {
             mMediaPlayer.start();
 
 
-            mNM.notify(0, mNotify);
+//            mNM.notify(0, mNotify);
 
             this.isRunning = true;
             this.startId = 0;
