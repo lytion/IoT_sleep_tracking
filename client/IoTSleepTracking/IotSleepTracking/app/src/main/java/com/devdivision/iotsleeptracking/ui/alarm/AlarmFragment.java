@@ -156,6 +156,8 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
     }
 
     private void postAlarm(String time) {
+        if (getActivity() != null)
+            Toast.makeText(getActivity(), "Request sended...", Toast.LENGTH_SHORT).show();
         OkHttpClient client = new OkHttpClient();
         String url = "https://iotsleeptracking.herokuapp.com/alarm";
         RequestBody formBody = new FormBody.Builder()
@@ -177,6 +179,13 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     Log.d("STATE", "PostAlarm request success");
+                    if (getActivity() == null)
+                        return;
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(), "Alarm successfully set !", Toast.LENGTH_LONG).show();
+                        }
+                    });
                     final String myResponse = response.body().string();
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
