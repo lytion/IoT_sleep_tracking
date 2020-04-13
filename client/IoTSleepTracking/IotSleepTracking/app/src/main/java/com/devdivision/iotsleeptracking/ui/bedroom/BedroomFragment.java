@@ -2,6 +2,7 @@ package com.devdivision.iotsleeptracking.ui.bedroom;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,25 @@ public class BedroomFragment extends Fragment {
         roomViewModel =
                 ViewModelProviders.of(this).get(BedroomViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_bedroom, container, false);
+
+
+        final Handler handler = new Handler();
+        final int delay = 60000; //milliseconds
+
+        getRoomEnvironment(root);
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                Log.d("STATE", ">>>RUN");
+                getRoomEnvironment(root);
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
+
+        return root;
+    }
+
+    private void getRoomEnvironment(View root)
+    {
         currentTemperature = root.findViewById(R.id.current_temperature);
         temperatureChart = root.findViewById(R.id.temperate_chart);
 
@@ -89,11 +109,6 @@ public class BedroomFragment extends Fragment {
                             try {
                                 Log.d("DATA", myResponse);
                                 JSONArray jsonarray = new JSONArray(myResponse);
-//                                for (int i = 0; i < jsonarray.length(); i++) {
-//                                    JSONObject jsonobject = jsonarray.getJSONObject(i);
-////                                    currentTemperature.setText(jsonobject.getString("temperature").toString());
-////                                    Log.d("DATA", jsonobject.getString("temperature").toString());
-//                                }
                                 currentTemperature.setText("Current temperature: " + jsonarray.getJSONObject(jsonarray.length()-1).getString("temperature").toString() + " °C");
                                 currentHumidity.setText("Current humidity: " + jsonarray.getJSONObject(jsonarray.length()-1).getString("humidity").toString() + " %");
                                 currentLight.setText("Current light: " + jsonarray.getJSONObject(jsonarray.length()-1).getString("light").toString() + " lx");
@@ -108,80 +123,12 @@ public class BedroomFragment extends Fragment {
                                     temperatureEntry.add(new Entry(idx, Float.parseFloat(jsonobject.getString("temperature"))));
                                     humidityEntry.add(new Entry(idx, Float.parseFloat(jsonobject.getString("humidity"))));
                                     lightEntry.add(new Entry(idx, Float.parseFloat(jsonobject.getString("light"))));
-//                                    currentTemperature.setText(jsonobject.getString("temperature").toString());
-//                                    Log.d("DATA", jsonobject.getString("temperature").toString());
                                 }
 
-                                YAxis temperatureleftAxis = temperatureChart.getAxisLeft();
-                                YAxis temperaturerightAxis = temperatureChart.getAxisRight();
-                                // don't print right Y axis and Y axis in grid
-                                temperaturerightAxis.setDrawLabels(false);
-                                temperaturerightAxis.setDrawGridLines(false);
-                                // Maximum value for a good sleep
-                                LimitLine temperatureLine = new LimitLine(28, "Maximum (28)");
-                                temperatureLine.setLineColor(Color.RED);
-                                temperatureLine.setLineWidth(2f);
-                                temperatureleftAxis.addLimitLine(temperatureLine);
-                                // set maximum value of the graph
-                                temperatureleftAxis.setAxisMaximum(30f);
-                                // don't print x axis and x axis in grid
-                                XAxis temperaturexAxis = temperatureChart.getXAxis();
-                                temperaturexAxis.setDrawGridLines(false);
-                                temperaturexAxis.setDrawLabels(false);
-                                LineDataSet temperatureDataSet = new LineDataSet(temperatureEntry, "");
-                                temperatureDataSet.setDrawFilled(true);
-                                LineData temperatureData = new LineData(temperatureDataSet);
-                                temperatureChart.setVisibility(View.VISIBLE);
-                                temperatureChart.animateY(1000);
-                                temperatureChart.setData(temperatureData);
+                                TemperatureChart(temperatureEntry);
+                                HumidityChart(humidityEntry);
+                                LightChart(lightEntry);
 
-                                YAxis humidityleftAxis = humidityChart.getAxisLeft();
-                                YAxis humidityrightAxis = humidityChart.getAxisRight();
-                                // don't print right Y axis
-                                humidityrightAxis.setDrawLabels(false);
-                                humidityrightAxis.setDrawGridLines(false);
-                                // Maximum value for a good sleep
-                                LimitLine humidityLine = new LimitLine(60, "Maximum (60)");
-                                humidityLine.setLineColor(Color.RED);
-                                humidityLine.setLineWidth(2f);
-                                humidityleftAxis.addLimitLine(humidityLine);
-                                // set maximum value of the graph
-                                humidityleftAxis.setAxisMaximum(70f);
-                                // don't print x axis
-                                XAxis humidityxAxis = humidityChart.getXAxis();
-                                humidityxAxis.setDrawGridLines(false);
-                                humidityxAxis.setDrawLabels(false);
-                                LineDataSet humidityDataSet = new LineDataSet(humidityEntry, "Legend");
-                                humidityDataSet.setDrawFilled(true);
-                                LineData humidityData = new LineData(humidityDataSet);
-                                humidityChart.setVisibility(View.VISIBLE);
-                                humidityChart.animateY(1000);
-                                humidityChart.setData(humidityData);
-
-                                YAxis lightleftAxis = lightChart.getAxisLeft();
-                                YAxis lightrightAxis = lightChart.getAxisRight();
-                                // don't print right Y axis
-                                lightrightAxis.setDrawLabels(false);
-                                lightrightAxis.setDrawGridLines(false);
-                                // Maximum value for a good sleep
-                                LimitLine lightLine = new LimitLine(10, "Maximum (20)");
-                                lightLine.setLineColor(Color.RED);
-                                lightLine.setLineWidth(2f);
-                                lightleftAxis.addLimitLine(lightLine);
-                                // graph doesn't go below zero
-                                lightleftAxis.setStartAtZero(true);
-                                XAxis lightxAxis = lightChart.getXAxis();
-                                lightxAxis.setDrawGridLines(false);
-                                // set maximum value of the graph
-                                lightleftAxis.setAxisMaximum(20f);
-                                // don't print x axis
-                                lightxAxis.setDrawLabels(false);
-                                LineDataSet lightDataSet = new LineDataSet(lightEntry, "Legend");
-                                lightDataSet.setDrawFilled(true);
-                                LineData lightData = new LineData(lightDataSet);
-                                lightChart.setVisibility(View.VISIBLE);
-                                lightChart.animateY(1000);
-                                lightChart.setData(lightData);
 
                             } catch (JSONException e) {
                                 Log.e("ERROR", e.toString());
@@ -191,14 +138,88 @@ public class BedroomFragment extends Fragment {
                 }
             }
         });
-        return root;
     }
 
-    static class MyXAxisFormatter extends ValueFormatter {
-        public String getFormatedValue(float value)
-        {
-            Log.d("STATE", "passe");
-            return String.valueOf(value)+"$";
-        }
+    private void TemperatureChart(List<Entry> temperatureEntry)
+    {
+        YAxis temperatureleftAxis = temperatureChart.getAxisLeft();
+        YAxis temperaturerightAxis = temperatureChart.getAxisRight();
+        // don't print right Y axis and Y axis in grid
+        temperaturerightAxis.setDrawLabels(false);
+        temperaturerightAxis.setDrawGridLines(false);
+        // Maximum value for a good sleep
+        LimitLine temperatureLine = new LimitLine(28, "Maximum (28)");
+        temperatureLine.setLineColor(Color.RED);
+        temperatureLine.setLineWidth(2f);
+        temperatureleftAxis.addLimitLine(temperatureLine);
+        // set maximum value of the graph
+        temperatureleftAxis.setAxisMaximum(30f);
+        // don't print x axis and x axis in grid
+        XAxis temperaturexAxis = temperatureChart.getXAxis();
+        temperaturexAxis.setDrawGridLines(false);
+        temperaturexAxis.setDrawLabels(false);
+        LineDataSet temperatureDataSet = new LineDataSet(temperatureEntry, "Temperature (°C)");
+        temperatureDataSet.setDrawFilled(true);
+        LineData temperatureData = new LineData(temperatureDataSet);
+        temperatureChart.setVisibility(View.VISIBLE);
+        temperatureChart.animateY(1000);
+        temperatureChart.setData(temperatureData);
+        temperatureChart.getDescription().setEnabled(false);
+    }
+
+    private void HumidityChart(List<Entry> humidityEntry)
+    {
+        YAxis humidityleftAxis = humidityChart.getAxisLeft();
+        YAxis humidityrightAxis = humidityChart.getAxisRight();
+        // don't print right Y axis
+        humidityrightAxis.setDrawLabels(false);
+        humidityrightAxis.setDrawGridLines(false);
+        // Maximum value for a good sleep
+        LimitLine humidityLine = new LimitLine(60, "Maximum (60)");
+        humidityLine.setLineColor(Color.RED);
+        humidityLine.setLineWidth(2f);
+        humidityleftAxis.addLimitLine(humidityLine);
+        // set maximum value of the graph
+        humidityleftAxis.setAxisMaximum(70f);
+        // don't print x axis
+        XAxis humidityxAxis = humidityChart.getXAxis();
+        humidityxAxis.setDrawGridLines(false);
+        humidityxAxis.setDrawLabels(false);
+        LineDataSet humidityDataSet = new LineDataSet(humidityEntry, "Humidity (%)");
+        humidityDataSet.setDrawFilled(true);
+        LineData humidityData = new LineData(humidityDataSet);
+        humidityChart.setVisibility(View.VISIBLE);
+        humidityChart.animateY(1000);
+        humidityChart.setData(humidityData);
+        humidityChart.getDescription().setEnabled(false);
+    }
+
+    private void LightChart(List<Entry> lightEntry)
+    {
+        YAxis lightleftAxis = lightChart.getAxisLeft();
+        YAxis lightrightAxis = lightChart.getAxisRight();
+        // don't print right Y axis
+        lightrightAxis.setDrawLabels(false);
+        lightrightAxis.setDrawGridLines(false);
+        // Maximum value for a good sleep
+        LimitLine lightLine = new LimitLine(10, "Maximum (10)");
+        lightLine.setLineColor(Color.RED);
+        lightLine.setLineWidth(2f);
+        lightleftAxis.addLimitLine(lightLine);
+        // graph doesn't go below zero
+        lightleftAxis.setStartAtZero(true);
+        XAxis lightxAxis = lightChart.getXAxis();
+        lightxAxis.setDrawGridLines(false);
+        // set maximum value of the graph
+        lightleftAxis.setAxisMaximum(20f);
+        // don't print x axis
+        lightxAxis.setDrawLabels(false);
+        LineDataSet lightDataSet = new LineDataSet(lightEntry, "Luminosity (lx)");
+        lightDataSet.setDrawFilled(true);
+        LineData lightData = new LineData(lightDataSet);
+        lightChart.setVisibility(View.VISIBLE);
+        lightChart.animateY(1000);
+        lightChart.setData(lightData);
+        lightChart.getDescription().setEnabled(false);
     }
 }
