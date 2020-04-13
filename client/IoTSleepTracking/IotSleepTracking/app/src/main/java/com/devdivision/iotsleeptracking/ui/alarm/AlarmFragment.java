@@ -54,12 +54,13 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         alarmViewModel =
                 ViewModelProviders.of(this).get(AlarmViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_alarm, container, false);
+        intervalEditText = root.findViewById(R.id.interval);
+        textAlarmSet = root.findViewById(R.id.textAlarmSet);
 
         Button buttonTimePicker = root.findViewById(R.id.button_timepicker);
         buttonTimePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intervalEditText = root.findViewById(R.id.interval);
                 if(TextUtils.isEmpty(intervalEditText.getText().toString())) {
                     intervalEditText.setError("You have to set an interval");
                     return;
@@ -71,15 +72,14 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
             }
         });
 
-        textAlarmSet = root.findViewById(R.id.textAlarmSet);
 //        getAlarm(textAlarmSet);
         final Handler handler = new Handler();
         final int delay = 10000; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){
-                Log.d("STATE", ">>>RUN");
-                getAlarm(textAlarmSet);
+                Log.d("STATE", ">>> GetAlarm RUN");
+                getAlarm(textAlarmSet, intervalEditText);
                 handler.postDelayed(this, delay);
             }
         }, delay);
@@ -108,8 +108,7 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
         }
     };
 
-    private void getAlarm(final TextView textAlarmSet) {
-        Log.d("STATE", "GET REQUEST");
+    private void getAlarm(final TextView textAlarmSet, final EditText intervalEditText) {
         OkHttpClient client = new OkHttpClient();
         String url = "https://iotsleeptracking.herokuapp.com/alarm";
         Request request = new Request.Builder()
@@ -119,22 +118,26 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                Log.d("STATE", "failed");
+                Log.d("STATE", "GetAlarm request failed");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    Log.d("STATE", "success");
+                    Log.d("STATE", "GetAlarm request success");
                     final String myResponse = response.body().string();
+                    if (getActivity() == null)
+                        return;
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 JSONArray jsonarray = new JSONArray(myResponse);
                                 String textTime = jsonarray.getJSONObject(jsonarray.length()-1).getString("alarm_date").toString();
+                                String interval = jsonarray.getJSONObject(jsonarray.length()-1).getString("interval").toString();
                                 String[] dataTime = textTime.split(":");
                                 textAlarmSet.setText(textTime);
+                                intervalEditText.setText(interval);
 
                                 Calendar c = Calendar.getInstance();
                                 c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(dataTime[0]));
@@ -167,13 +170,13 @@ public class AlarmFragment extends Fragment implements TimePickerDialog.OnTimeSe
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                Log.d("STATE", "failed");
+                Log.d("STATE", "PostAlarm request failed");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    Log.d("STATE", "success");
+                    Log.d("STATE", "PostAlarm request success");
                     final String myResponse = response.body().string();
                     getActivity().runOnUiThread(new Runnable() {
                         @Override

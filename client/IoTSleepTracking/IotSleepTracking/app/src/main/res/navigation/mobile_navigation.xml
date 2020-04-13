@@ -16,28 +16,4 @@
         android:name="com.devdivision.iotsleeptracking.ui.bedroom.BedroomFragment"
         android:label="@string/menu_bedroom"
         tools:layout="@layout/fragment_bedroom" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.devdivision.iotsleeptracking.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
-
-    <fragment
-        android:id="@+id/nav_tools"
-        android:name="com.devdivision.iotsleeptracking.ui.tools.ToolsFragment"
-        android:label="@string/menu_tools"
-        tools:layout="@layout/fragment_tools" />
-
-    <fragment
-        android:id="@+id/nav_share"
-        android:name="com.devdivision.iotsleeptracking.ui.share.ShareFragment"
-        android:label="@string/menu_share"
-        tools:layout="@layout/fragment_share" />
-
-    <fragment
-        android:id="@+id/nav_send"
-        android:name="com.devdivision.iotsleeptracking.ui.send.SendFragment"
-        android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
 </navigation>

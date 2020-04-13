@@ -66,7 +66,7 @@ public class BedroomFragment extends Fragment {
         getRoomEnvironment(root);
         handler.postDelayed(new Runnable(){
             public void run(){
-                Log.d("STATE", ">>>RUN");
+                Log.d("STATE", ">>> GetRoomEnvironment RUN");
                 getRoomEnvironment(root);
                 handler.postDelayed(this, delay);
             }
@@ -95,19 +95,20 @@ public class BedroomFragment extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                Log.d("STATE", "failed");
+                Log.d("STATE", "roomEnvironment request failed");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    Log.d("STATE", "success");
+                    Log.d("STATE", "roomEnvironment request success");
                     final String myResponse = response.body().string();
+                    if (getActivity() == null)
+                        return;
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                Log.d("DATA", myResponse);
                                 JSONArray jsonarray = new JSONArray(myResponse);
                                 currentTemperature.setText("Current temperature: " + jsonarray.getJSONObject(jsonarray.length()-1).getString("temperature").toString() + " °C");
                                 currentHumidity.setText("Current humidity: " + jsonarray.getJSONObject(jsonarray.length()-1).getString("humidity").toString() + " %");
